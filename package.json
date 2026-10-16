@@ -1,0 +1,14 @@
+{
+  "name": "nexora",
+  "version": "1.0.0",
+  "description": "NEXORA gamified study app",
+  "author": "NEXORA",
+  "main": "electron-main.js",
+  "scripts": {
+    "prep": "node -e \"const f=require('fs');['pdf.min.js','pdf.worker.min.js'].forEach(n=>f.copyFileSync('node_modules/pdfjs-dist/build/'+n,'www/'+n))\"",
+    "win": "npm run prep && electron-builder --win portable --publish never"
+  },
+  "dependencies": { "pdfjs-dist": "3.11.174", "@capacitor/core": "^6.1.0", "@capacitor/android": "^6.1.0" },
+  "devDependencies": { "electron": "^31.0.0", "electron-builder": "^24.13.3", "@capacitor/cli": "^6.1.0" },
+  "build": { "appId": "com.nexora.study", "productName": "NEXORA", "files": ["electron-main.js", "www/**"], "win": { "target": "portable" } }
+}

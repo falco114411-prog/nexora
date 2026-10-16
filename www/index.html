@@ -1,0 +1,164 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>NEXORA</title>
+<style>
+:root{--bg:#050914;--tx:#e8eeff;--mu:#9aaace;--gl:rgba(255,255,255,.07);--bd:rgba(160,190,255,.2);--ac:#5aa9ff;--ac2:#8b7bff;--cy:#4fe3ff;--ok:#4fe0a0;--no:#ff6b8b;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{--bg:#eaf0ff;--tx:#0d1733;--mu:#44547a;--gl:rgba(255,255,255,.65);--bd:rgba(40,70,140,.22);color-scheme:light}
+:root[data-hc]{--mu:var(--tx);--bd:rgba(200,220,255,.55)}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}[hidden]{display:none!important}
+body{margin:0;min-height:100vh;color:var(--tx);background:radial-gradient(900px 500px at 12% -10%,rgba(90,110,255,.3),transparent 60%),radial-gradient(700px 500px at 100% 8%,rgba(79,227,255,.14),transparent 60%),var(--bg);font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:960px;margin:0 auto;padding:22px 16px 120px}
+h1,h2{margin:0 0 .4em;line-height:1.2;letter-spacing:-.01em}h1{font-size:1.8rem}h2{font-size:1.2rem}p{margin:.35em 0}.mu{color:var(--mu)}
+.g{background:var(--gl);border:1px solid var(--bd);border-radius:20px;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 12px 32px rgba(0,0,0,.22)}
+.pad{padding:18px}.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:14px 0}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.sp{justify-content:space-between}.li{padding:9px 0;border-top:1px solid var(--bd)}
+.b{font:inherit;color:#fff;border:1px solid transparent;border-radius:14px;padding:10px 16px;cursor:pointer;background:linear-gradient(135deg,var(--ac),var(--ac2));transition:transform .2s,filter .2s}
+.b:hover{filter:brightness(1.1);transform:translateY(-1px)}.b.s{background:var(--gl);border-color:var(--bd);color:var(--tx)}
+:focus-visible{outline:2px solid var(--cy);outline-offset:3px}
+.card{cursor:pointer;text-align:left;font:inherit;color:inherit;transition:transform .25s,border-color .25s}.card:hover{transform:translateY(-3px);border-color:var(--ac)}
+.bar{height:8px;border-radius:9px;background:rgba(127,150,200,.22);overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--cy));transition:width .5s}
+.o{display:flex;gap:10px;width:100%;text-align:left;margin:8px 0}.o:disabled{cursor:default;transform:none}
+.b.o.ok{border-color:var(--ok);background:rgba(79,224,160,.16);color:var(--tx)}.b.o.no{border-color:var(--no);background:rgba(255,107,139,.16);color:var(--tx)}
+.okb{border-color:var(--ok)}.nob{border-color:var(--no)}.err{color:var(--no)}
+.tag{font-size:.7rem;padding:2px 8px;border-radius:9px;background:rgba(90,169,255,.22);vertical-align:middle}
+.drop{display:block;border:2px dashed var(--bd);border-radius:18px;padding:26px;text-align:center;cursor:pointer;transition:border-color .2s}.drop.on,.drop:hover{border-color:var(--cy)}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));background:var(--gl);border-top:1px solid var(--bd);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);z-index:10}
+nav button{flex:1;max-width:120px;font:inherit;font-size:.8rem;color:var(--mu);background:none;border:0;border-radius:12px;padding:8px 4px;cursor:pointer}nav button[aria-current=page]{background:rgba(90,169,255,.22);color:var(--tx)}
+.ov{position:fixed;inset:0;display:grid;place-items:center;padding:16px;background:rgba(3,6,16,.8);backdrop-filter:blur(8px);z-index:20}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.3s;padding:10px 16px;z-index:30}.toast.on{opacity:1;transform:translate(-50%,0)}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}#v>*{animation:in .35s both}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}:root[data-rm] *{animation:none!important;transition:none!important}
+</style></head><body>
+<main id="v"></main><nav id="nv" aria-label="Main"></nav><div id="ob" class="ov" hidden></div><div id="t" class="toast g" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';'),shuf=a=>{for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a},day=(o=0)=>new Date(Date.now()+o*864e5).toISOString().slice(0,10);
+/* Demo course: sample content written for this prototype, not a real textbook. [topic, difficulty, page, question, correct, wrong x3, explanation] */
+const CH0=[{n:'Chapter 1 · Cell Structure',s:'Cells are the basic unit of life. Organelles divide the work: the nucleus stores DNA, ribosomes build proteins, and membranes control what enters and leaves.',o:['Name major organelles and their jobs','Explain diffusion and osmosis'],t:['Organelles','Membranes']},{n:'Chapter 2 · Energy in Cells',s:'Plants capture light energy in chloroplasts, while cells release energy from glucose through respiration in mitochondria.',o:['Describe photosynthesis inputs and outputs','Compare aerobic respiration products'],t:['Photosynthesis','Respiration']}];
+let CH,Q,TC,TP,CUR;
+const Q0=[
+['Organelles',1,12,'Which organelle stores most of a cell’s DNA?','Nucleus','Ribosome','Golgi body','Vacuole','The nucleus holds the chromosomes that carry the cell’s DNA.'],
+['Organelles',1,14,'Which organelle releases most of a cell’s usable energy?','Mitochondrion','Lysosome','Nucleus','Cell wall','Mitochondria carry out aerobic respiration and produce most of the cell’s ATP.'],
+['Organelles',2,13,'Where are proteins assembled?','Ribosomes','Mitochondria','Vacuoles','The cell membrane','Ribosomes read RNA instructions and join amino acids into proteins.'],
+['Organelles',2,16,'Which structure is found in plant cells but not animal cells?','Cell wall','Nucleus','Cytoplasm','Cell membrane','Plant cells have a rigid cellulose wall outside the membrane.'],
+['Membranes',2,21,'Diffusion is the net movement of particles…','from high to low concentration','from low to high concentration','only when ATP is used','only through protein pumps','Particles spread down their concentration gradient without needing energy.'],
+['Membranes',3,22,'Osmosis is the net movement of…','water across a partially permeable membrane','solute against a gradient','protein into the nucleus','ions using ATP','Osmosis is the diffusion of water across a partially permeable membrane.'],
+['Photosynthesis',1,31,'Which gas do plants take in for photosynthesis?','Carbon dioxide','Oxygen','Nitrogen','Methane','Carbon dioxide and water are the raw materials; oxygen is released.'],
+['Photosynthesis',2,32,'Where does photosynthesis take place?','Chloroplasts','Mitochondria','Nucleus','Ribosomes','Chloroplasts contain chlorophyll, which absorbs light energy.'],
+['Respiration',2,38,'What does aerobic respiration need?','Glucose and oxygen','Light and carbon dioxide','Nitrogen and water','Only glucose','Aerobic respiration uses glucose and oxygen to release energy.'],
+['Respiration',3,39,'Which pair are products of aerobic respiration?','Carbon dioxide and water','Oxygen and glucose','Lactic acid and ethanol','Starch and oxygen','Glucose is oxidised to carbon dioxide and water, releasing energy.']];
+const M={story:['📖','Story Mode','Branching narrative. Your choices set the challenge.',6],quest:['⚔️','RPG Quest','Chapter missions that earn XP and levels.',5],boss:['🐉','Boss Battle','Mixed chapter exam. Three lives.',8],speed:['⚡','Speed Run','Beat the clock. Untimed option in Settings.',8],memory:['🧠','Memory Challenge','Recall definitions, then grade yourself.',8],survival:['🔥','Survival','Harder every round. One life.',10],daily:['🗓️','Daily Quest','Today’s personalised goal.',0],weak:['🎯','Weakness Hunter','Drill the concepts you miss most.',6]};
+const ST=['You shrink and slip through the membrane into the cell’s control room.','A locked door hums with energy. Only the right concept opens it.','The corridor narrows. Something stirs among the organelles ahead.','Sparks cross the chloroplast bridge.','Almost there. The final gate reads your knowledge.','Light returns. You see the whole cell clearly.'];
+const A={first:['First Steps','Earn your first XP'],flawless:['Flawless','Perfect run of 5+ questions'],fire:['On Fire','Reach a 3-day streak'],lv3:['Level 3','Reach level 3'],boss:['Boss Slayer','Win a Boss Battle'],comeback:['Comeback','Answer a missed concept correctly']};
+const def=()=>({xp:0,streak:0,last:'',day:'',done:0,goal:'',gq:10,box:{},miss:{},log:[],ach:{},files:[],courses:[],pg:{},cur:'demo',set:{sound:true,rm:false,untimed:false,hc:false,light:false}});
+let S=def(),R=null,cur='home';try{Object.assign(S,JSON.parse(localStorage.getItem('nx')||'{}'))}catch(e){}
+const save=()=>{try{const{box,miss,...r}=S;localStorage.setItem('nx',JSON.stringify(r))}catch(e){}};
+function courses(){return[{id:'demo',n:'Cell Biology',ch:CH0,q:Q0,demo:1},...S.courses]}
+function useC(id){const c=courses().find(x=>x.id==id)||courses()[0];CUR=c;S.cur=c.id;CH=c.ch;Q=c.q;TC={};CH.forEach((h,i)=>h.t.forEach(t=>TC[t]=i));TP=Object.keys(TC);const p=S.pg[c.id]||(S.pg[c.id]={box:{},miss:{}});S.box=p.box;S.miss=p.miss}
+if(S.day!=day()){S.day=day();S.done=0}
+S.pg.demo=S.pg.demo||{box:S.box||{},miss:S.miss||{}};useC(S.cur);
+const lv=()=>Math.floor(S.xp/120)+1,isDue=i=>S.box[i]&&S.box[i].d<=Date.now(),pc=v=>Math.round(v*100),
+mast=t=>{const a=Q.map((x,i)=>x[0]==t?(S.box[i]?S.box[i].b/4:0):-1).filter(v=>v>=0);return a.reduce((s,v)=>s+v,0)/a.length},
+wk=()=>TP.slice().sort((a,b)=>mast(a)-mast(b))[0];
+function touch(){const t=day();if(S.last!=t){S.streak=S.last==day(-1)?S.streak+1:1;S.last=t}}
+function toast(m){const e=$('#t');e.textContent=m;e.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>e.classList.remove('on'),2600)}
+function unlock(k){if(!S.ach[k]){S.ach[k]=1;toast('🏆 '+A[k][0])}}
+function snd(ok){if(!S.set.sound)return;try{const c=snd.c||(snd.c=new AudioContext()),o=c.createOscillator(),g=c.createGain();o.frequency.value=ok?660:220;g.gain.value=.05;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.12)}catch(e){}}
+function ap(){const r=document.documentElement;r.toggleAttribute('data-rm',!!S.set.rm);r.toggleAttribute('data-hc',!!S.set.hc);r.dataset.theme=S.set.light?'light':'dark'}
+/* Views */
+const home=()=>{const p=(S.xp%120)/120,C=276.5,g=Math.min(1,S.done/S.gq),dc=Q.filter((_,i)=>isDue(i)).length,w=wk(),st=(S.last==day()||S.last==day(-1))?S.streak:0;
+return `<h1>Welcome back</h1><p class=mu>Study goal: ${esc(S.goal)}</p><div class=grid>
+<div class="g pad row"><svg width=110 height=110 viewBox="0 0 110 110" role=img aria-label="Level ${lv()}, ${S.xp%120} of 120 XP"><defs><linearGradient id=gr><stop offset=0 stop-color="#5aa9ff"/><stop offset=1 stop-color="#8b7bff"/></linearGradient></defs><circle cx=55 cy=55 r=44 fill=none stroke="rgba(127,150,200,.25)" stroke-width=9 /><circle cx=55 cy=55 r=44 fill=none stroke="url(#gr)" stroke-width=9 stroke-linecap=round stroke-dasharray=${C} stroke-dashoffset=${C*(1-p)} transform="rotate(-90 55 55)" style="transition:stroke-dashoffset .6s"/><text x=55 y=63 text-anchor=middle fill="currentColor" font-size=26 font-weight=700>${lv()}</text></svg><div><h2>Level ${lv()}</h2><p class=mu>${S.xp%120}/120 XP · ${S.xp} total</p><p>🔥 ${st}-day streak</p></div></div>
+<div class="g pad"><h2>Today’s goal</h2><p class=mu>${S.done}/${S.gq} questions answered</p><div class=bar><i style="width:${g*100}%"></i></div><p class=mu>Recommended: ${w} is your weakest topic (${pc(mast(w))}% mastery).</p></div></div>
+<div class="g pad"><h2>Missions</h2>
+<div class="li row sp"><span>Daily Quest: ${S.gq} personalised questions</span><button class=b onclick="start('daily')">Start</button></div>
+<div class="li row sp"><span>Revision: ${dc} concept${dc==1?'':'s'} due for review</span><button class="b s" onclick="start('daily')">Review</button></div>
+<div class="li row sp"><span>Strengthen ${w}</span><button class="b s" onclick="start('quest',${TC[w]})">Quest</button></div></div>
+<div class="g pad" style="margin-top:14px"><h2>Recent activity</h2>${S.log.length?S.log.slice(0,4).map(l=>`<div class="li row sp"><span>${l.m} · ${l.s}</span><span class=mu>+${l.x} XP</span></div>`).join(''):'<p class=mu>Nothing yet. Start a mission to begin your run.</p>'}</div>`};
+
+const lib=()=>`<h1>Course Library</h1><div class="g pad"><h2>Import a PDF</h2>
+<label class=drop tabindex=0 onkeydown="if(event.key=='Enter')this.querySelector('input').click()" ondragover="event.preventDefault();this.classList.add('on')" ondragleave="this.classList.remove('on')" ondrop="event.preventDefault();this.classList.remove('on');imp(event.dataTransfer.files[0])"><b>Drop a PDF here</b><br><span class=mu>or click to choose · PDF only · up to 25 MB · read on your device</span><input type=file accept="application/pdf,.pdf" hidden onchange="imp(this.files[0])"></label><div id=im></div></div>
+<div class=row style="margin:18px 0 6px">${courses().map(c=>`<button class="b ${c.id==CUR.id?'':'s'}" onclick="useC('${c.id}');save();render()">${c.n}</button>`).join('')}</div>
+<h2>${CUR.n} ${CUR.demo?'<span class=tag>Demo course</span>':'<span class=tag>Imported</span> <button class="b s" onclick="del()">Remove</button>'}</h2><p class=mu>${CUR.demo?'Sample content with page references. Not a real textbook.':Q.length+' questions built on this device from your PDF.'}</p>
+<div class=grid>${CH.map((c,i)=>{const m=c.t.reduce((s,t)=>s+mast(t),0)/c.t.length;return `<div class="g pad"><h2>${c.n}</h2><p>${c.s}</p><p class=mu>Objectives: ${c.o.join(' · ')}</p><p class=mu>Topics: ${c.t.join(', ')}</p><div class=bar><i style="width:${m*100}%"></i></div><p class=mu>${pc(m)}% mastered</p><button class=b onclick="start('quest',${i})">Start quest</button></div>`}).join('')}</div>`;
+const play=()=>`<h1>Choose your mission</h1><div class=grid>${Object.keys(M).map(k=>`<button class="g pad card" onclick="start('${k}')"><div style="font-size:1.8rem" aria-hidden=true>${M[k][0]}</div><h2>${M[k][1]}</h2><p class=mu>${M[k][2]}</p></button>`).join('')}</div>`;
+const prog=()=>{const ms=Object.keys(S.miss).sort((a,b)=>S.miss[b]-S.miss[a]).slice(0,4);
+return `<h1>Progress</h1><div class=grid><div class="g pad"><h2>Topic mastery</h2>${TP.map(t=>`<div class="row sp"><span>${t}</span><span class=mu>${pc(mast(t))}%</span></div><div class=bar><i style="width:${mast(t)*100}%"></i></div>`).join('')}</div>
+<div class="g pad"><h2>Mistake history</h2>${ms.length?ms.map(i=>`<div class=li><b>${Q[i][3]}</b><br><span class=mu>Missed ${S.miss[i]}× · p. ${Q[i][2]} · ${Q[i][0]}</span></div>`).join(''):'<p class=mu>No mistakes logged yet.</p>'}</div>
+<div class="g pad"><h2>Achievements</h2>${Object.keys(A).map(k=>`<p class="${S.ach[k]?'':'mu'}">${S.ach[k]?'🏆':'🔒'} <b>${A[k][0]}</b> · ${A[k][1]}</p>`).join('')}</div></div>`};
+const sets=()=>{const o=(k,t)=>`<label class="row li"><input type=checkbox ${S.set[k]?'checked':''} onchange="S.set.${k}=this.checked;save();ap()"> ${t}</label>`;
+return `<h1>Settings</h1><div class="g pad">${o('sound','Sound effects')}${o('rm','Reduced motion')}${o('untimed','Untimed Speed Run (accessibility)')}${o('hc','High contrast text')}${o('light','Light theme (visual comfort)')}<button class="b s" style="margin-top:14px" onclick="if(this.dataset.c){S=def();useC('demo');save();ap();ob();go('home')}else{this.dataset.c=1;this.textContent='Tap again to confirm reset'}">Reset progress</button></div>`};
+const V={home,lib,play,prog,sets};
+function go(v){cur=v;R&&clearInterval(R.tm);R=null;render();scrollTo(0,0)}
+function render(){$('#v').innerHTML=V[cur]();document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.v==cur?'page':'false'))}
+/* PDF import: validates, reads text with pdf.js, builds questions on-device from the PDF’s own sentences */
+async function imp(f){const m=$('#im'),say=(t,e)=>m.innerHTML=`<p class="${e?'err':'mu'}" role=${e?'alert':'status'}>${t}</p>`;
+if(!f)return;if(!/\.pdf$/i.test(f.name))return say('That doesn’t look like a PDF. Please choose a .pdf file.',1);
+if(!f.size)return say('This file is empty.',1);if(f.size>25e6)return say('This file is over 25 MB. Split it into smaller parts and try again.',1);
+say('Checking file…');if((await f.slice(0,5).text())!='%PDF-')return say('This file isn’t a valid PDF (missing PDF header).',1);
+try{say('Loading PDF reader…');const P=await readPdf(f,say);
+if(P.join('').replace(/\s/g,'').length<300)return say('No selectable text found. Scanned PDFs need OCR, which isn’t supported yet.',1);
+say('Writing questions…');await new Promise(r=>setTimeout(r,30));const c=gen(P,f.name);
+if(c.q.length<4)return say('Not enough readable sentences to build questions from this PDF.',1);
+S.courses.push(c);useC(c.id);save();render();toast('Created '+c.q.length+' questions from your PDF')}
+catch(e){say(e&&e.name=='PasswordException'?'This PDF is password-protected. Remove the password and try again.':'Could not read this PDF: '+esc(e&&e.message||e),1)}}
+function del(){S.courses=S.courses.filter(c=>c.id!=CUR.id);delete S.pg[CUR.id];useC('demo');save();render()}
+function loadPdf(){return new Promise((ok,no)=>{if(window.pdfjsLib)return ok();const L=['pdf.min.js','https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'];let i=0;(function t(){if(i>=L.length)return no(new Error('PDF reader could not load. Check your connection.'));const s=document.createElement('script');s.src=L[i++];s.onload=()=>{if(!window.pdfjsLib)return t();pdfjsLib.GlobalWorkerOptions.workerSrc=s.src.replace('pdf.min.js','pdf.worker.min.js');ok()};s.onerror=t;document.head.appendChild(s)})()})}
+async function readPdf(f,say){await loadPdf();const d=await pdfjsLib.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise,n=Math.min(d.numPages,400),P=[];
+for(let i=1;i<=n;i++){say('Reading page '+i+'/'+n+'…');const c=await(await d.getPage(i)).getTextContent();P.push(c.items.map(t=>t.str+(t.hasEOL?'\n':' ')).join(''))}return P}
+const SW=new Set('because before between during further having should through another around cannot rather within without whether almost always actually usually really several things certain different example following however therefore although which these those their there would could about after again being other where while under until using often called known'.split(' '));
+const DR=/^(?:The |A |An )?([A-Za-z][A-Za-z-]+(?: [a-z-]+){0,2}) (?:is|are|refers to|means) (.{25,200})\.$/,PR=/^(this|that|it|there|these|those|which|what|here|they|we|one|he|she|its|their)\b/i;
+/* Rule-based generator: every question is cut from a real sentence, so it carries a true page and quote. */
+function gen(P,name){const H=/^(chapter|unit|section|lesson|part|module)\s+[\dIVXivx]+\b.{0,60}$|^\d{1,2}(\.\d{1,2})?\s+[A-Z][A-Za-z ,:'-]{3,60}$/;
+let secs=[{n:'Introduction',c:[]}],cu=secs[0];
+P.forEach((t,i)=>{let b=[];const fb=()=>{if(b.length)cu.c.push({p:i+1,x:b.join(' ')});b=[]};t.split('\n').forEach(l=>{l=l.replace(/\s+/g,' ').trim();if(!l)return;if(H.test(l)){fb();secs.push(cu={n:l.slice(0,60),c:[]})}else b.push(l)});fb()});
+secs=secs.filter(s=>s.c.length);
+if(secs.length<2){const g={};secs.flatMap(s=>s.c).forEach(c=>{const k=(c.p-1)/10|0;(g[k]=g[k]||{n:'Pages '+(k*10+1)+'–'+(k*10+10),c:[]}).c.push(c)});secs=Object.values(g)}
+const F={},cnt=(x,o)=>(x.match(/[A-Za-z][a-z-]{5,}/g)||[]).forEach(w=>{w=w.toLowerCase();if(!SW.has(w))o[w]=(o[w]||0)+1});cnt(P.join(' '),F);
+const K=Object.keys(F).filter(w=>F[w]>1).sort((a,b)=>F[b]-F[a]).slice(0,250),D=[],used={},ch=[],q=[];
+const pick=(pool,a,s)=>shuf(pool.filter(k=>k!=a&&!s.toLowerCase().includes(k)&&Math.abs(k.length-a.length)<=5)).slice(0,3);
+secs.forEach(sec=>{sec.ss=[];sec.c.forEach(c=>(c.x.match(/[A-Z][^.!?]{30,260}[.!?](?=\s|$)/g)||[]).forEach(s=>{const w=s.split(' ').length;if(w<8||w>34||(s.match(/\d/g)||[]).length>6||/https?:|www\./.test(s))return;const m=s.match(DR),d=m&&!PR.test(m[1])&&!new RegExp(m[1],'i').test(m[2])?[m[1].toLowerCase(),m[2]]:null;if(d)D.push(d[0]);sec.ss.push({s,p:c.p,w,d})}))});
+const UD=[...new Set(D)],cap=Math.max(3,Math.min(12,300/secs.length|0));
+secs.forEach(sec=>{const u=used[sec.n]=(used[sec.n]||0)+1,nm=esc(sec.n)+(u>1?' ('+u+')':''),out=[];let nd=0;
+sec.ss.forEach(x=>{if(x.d&&nd<4&&UD.length>3){const o=pick(UD,x.d[0],x.d[1]);if(o.length==3){nd++;out.push([nm,2,x.p,'Which term fits this description: “'+esc(x.d[1])+'”?',esc(x.d[0]),...o.map(esc),'“'+esc(x.s)+'”']);return}}
+let w0='',sc=0;(x.s.match(/[A-Za-z][a-z-]{5,}/g)||[]).forEach(w=>{const l=w.toLowerCase(),v=l.length+Math.min(F[l]||0,10);if(F[l]>1&&!SW.has(l)&&x.s.indexOf(w)>0&&v>sc){sc=v;w0=w}});
+if(!w0)return;const l=w0.toLowerCase(),o=pick(K,l,x.s);if(o.length<3)return;
+out.push([nm,x.w<15?1:x.w<23?2:3,x.p,'Fill in the blank: '+esc(x.s.replace(new RegExp('\\b'+w0+'\\b','gi'),'_____')),esc(l),...o.map(esc),'“'+esc(x.s)+'”'])});
+const st=Math.max(1,out.length/cap|0),pk=out.filter((_,i)=>i%st==0).slice(0,cap);if(!pk.length)return;
+const lf={};sec.c.forEach(c=>cnt(c.x,lf));
+ch.push({n:nm,s:esc(sec.ss.slice(0,2).map(x=>x.s).join(' ').slice(0,280)),o:['Key terms: '+Object.keys(lf).sort((a,b)=>lf[b]-lf[a]).slice(0,4).map(esc).join(', ')],t:[nm]});q.push(...pk)});
+return{id:'c'+Date.now().toString(36),n:esc(name.replace(/\.pdf$/i,'').slice(0,40)),ch,q}}
+/* Game engine */
+function start(m,ch,path){let ids=Q.map((_,i)=>i);
+if(m=='story'&&!path){$('#v').innerHTML=`<div class="g pad"><h1>Story Mode</h1><p>You stand at a fork inside a cell. Your choice sets the challenge.</p><button class="b s o" onclick="start('story',0,1)">Safe corridor: easier questions first</button><button class="b s o" onclick="start('story',0,2)">Risky vault: harder questions first</button></div>`;return}
+if(m=='quest'){ch=ch??TC[wk()];ids=ids.filter(i=>TC[Q[i][0]]==ch)}
+if(m=='weak'){ids=ids.filter(i=>S.miss[i]);if(!ids.length)return toast('No mistakes logged yet. Play a mode first, then come back.')}
+shuf(ids);
+if(m=='daily'){const w={};ids.forEach(i=>w[i]=isDue(i)?3:S.miss[i]?2:S.box[i]?0:1);ids.sort((a,b)=>w[b]-w[a])}
+if(m=='survival')ids.sort((a,b)=>Q[a][1]-Q[b][1]);
+if(m=='story')ids.sort((a,b)=>(Q[a][1]-Q[b][1])*(path==1?1:-1));
+ids=ids.slice(0,m=='daily'?S.gq:M[m][3]||ids.length);
+R={m,ids,i:0,ok:0,xp:0,L:m=='boss'?3:m=='survival'?1:0};R.lives=R.L;step()}
+function step(){clearInterval(R.tm);const id=R.ids[R.i],q=Q[id],m=R.m,tm=m=='speed'&&!S.set.untimed;R.id=id;R.fb=0;R.op=shuf([4,5,6,7].map((x,k)=>({t:q[x],ok:!k})));
+$('#v').innerHTML=`<div class="row sp"><button class="b s" onclick="go('play')">← Exit</button><span class=mu>${M[m][1]} · ${R.i+1}/${R.ids.length}${R.L?' · '+'❤️'.repeat(R.lives):''}</span></div><div class=bar style="margin:12px 0"><i style="width:${R.i/R.ids.length*100}%"></i></div>
+<div class="g pad"><p class=mu>${q[0]} · ${['','Easy','Medium','Hard'][q[1]]}</p>${m=='story'?`<p class=mu><em>${ST[R.i%ST.length]}</em></p>`:''}<h2>${q[3]}</h2>${tm?'<div class=bar id=tb><i style="width:100%;transition:none"></i></div>':''}
+${m=='memory'?'<button class=b id=rv onclick="rev()">Reveal answer</button>':R.op.map((o,k)=>`<button class="b s o" onclick="ans(${k})"><b>${k+1}</b> ${o.t}</button>`).join('')}<div id=fb aria-live=polite></div></div>`;
+if(tm){let t=150;R.tm=setInterval(()=>{t--;const e=$('#tb i');if(e)e.style.width=t/1.5+'%';if(t<=0)ans(-1)},100)}}
+const ans=k=>grade(k>=0&&!!R.op[k]&&R.op[k].ok,k);
+function rev(){const q=Q[R.id];$('#rv').hidden=1;$('#fb').innerHTML=`<div class="g pad" style="margin-top:12px"><p><b>${q[4]}</b></p><p class=mu>${q[8]} (p. ${q[2]})</p><div class=row><button class=b onclick="grade(true)">Got it</button><button class="b s" onclick="grade(false)">Again</button></div></div>`}
+function grade(ok,k){if(R.fb)return;R.fb=1;clearInterval(R.tm);const id=R.id,q=Q[id],b=S.box[id]||(S.box[id]={b:0,d:0}),back=ok&&S.miss[id]&&b.b<2,x=ok?10+(back?5:0):0;
+if(ok){R.ok++;b.b=Math.min(4,b.b+1);if(b.b>=3)delete S.miss[id]}else{S.miss[id]=(S.miss[id]||0)+1;b.b=0;if(R.L)R.lives--}
+b.d=Date.now()+[0,1,3,7,14][b.b]*864e5;S.xp+=x;R.xp+=x;S.done++;touch();snd(ok);if(back)unlock('comeback');save();
+document.querySelectorAll('.o').forEach((e,i)=>{e.disabled=true;if(R.op[i].ok)e.classList.add('ok');else if(i==k)e.classList.add('no')});
+const last=R.i+1>=R.ids.length||(R.L&&R.lives<=0);
+$('#fb').innerHTML=`<div class="g pad ${ok?'okb':'nob'}" style="margin-top:12px"><b>${ok?'Correct'+(x?' · +'+x+' XP':''):(k===-1?'Time’s up':'Not quite')}</b><p>${ok?'':'Correct answer: <b>'+q[4]+'</b>. '}${q[8]}</p><p class=mu>Source: ${CUR.n}, p. ${q[2]}</p><button class=b id=nx onclick="nxt()">${last?'Finish':'Next'}</button></div>`;$('#nx').focus()}
+function nxt(){R.i++;(R.i>=R.ids.length||(R.L&&R.lives<=0))?end():step()}
+function end(){R.fb=1;const dead=R.L&&R.lives<=0;
+if(R.m=='boss'&&!dead){S.xp+=20;R.xp+=20;unlock('boss')}
+if(R.ok==R.ids.length&&R.ids.length>=5)unlock('flawless');if(S.xp>0)unlock('first');if(S.streak>=3)unlock('fire');if(lv()>=3)unlock('lv3');
+S.log.unshift({m:M[R.m][1],s:R.ok+'/'+R.i,x:R.xp});S.log=S.log.slice(0,8);save();
+$('#v').innerHTML=`<div class="g pad" style="text-align:center"><h1>${dead?'Defeated… for now':'Run complete'}</h1><p>${R.ok}/${R.i} correct · +${R.xp} XP · Level ${lv()}</p><div class=bar><i style="width:${R.ok/R.i*100}%"></i></div><p class=mu>Missed concepts return in your review queue.</p><div class=row style="justify-content:center"><button class=b onclick="go('home')">Dashboard</button><button class="b s" onclick="start('${R.m}')">Play again</button></div></div>`}
+addEventListener('keydown',e=>{if(R&&R.op&&!R.fb&&R.m!='memory'&&/^[1-4]$/.test(e.key)&&R.op[+e.key-1])ans(+e.key-1)});
+/* Onboarding + boot */
+function pick(n,q){S.goal=n;S.gq=q;save();ob();render()}
+function ob(){const e=$('#ob');if(S.goal){e.hidden=true;return}e.hidden=false;e.innerHTML=`<div class="g pad" style="max-width:460px" role=dialog aria-modal=true aria-labelledby=ot><h1 id=ot>Welcome to NEXORA</h1><p class=mu>Turn course material into missions. Learn, level up, remember. What’s your study goal?</p>${[['Exam prep',15],['Steady habit',10],['Quick catch-up',5]].map(g=>`<button class="b s o" onclick="pick('${g[0]}',${g[1]})"><b>${g[0]}</b> · ${g[1]} questions a day</button>`).join('')}</div>`;e.querySelector('button').focus()}
+$('#nv').innerHTML=[['home','🏠','Home'],['lib','📚','Library'],['play','🎮','Play'],['prog','📈','Progress'],['sets','⚙️','Settings']].map(a=>`<button data-v=${a[0]} onclick="go('${a[0]}')"><span aria-hidden=true>${a[1]}</span><br>${a[2]}</button>`).join('');
+ap();ob();render();
+</script></body></html>
